@@ -31,6 +31,14 @@ Once the app is running, follow these steps to modify JSON files:
 4. Wait for the app to finish modifying the JSON files.
 5. Once the modification process is complete, you can find the modified ZIP file in the location you specified in step 2.
 
+# Project Development Steps
+1. Create a new Android project in Android Studio.
+2. Create a user interface with a "Browse" button that allows the user to select the ZIP archive.
+3. Use the java.util.zip library to decompress the selected ZIP archive and get the JSON files inside it.
+4. Use the JSON file modification algorithm that you have already created to modify the files.
+5. Use the java.util.zip library to create a new ZIP archive containing the modified JSON files.
+6. Give the user the option to save the new ZIP archive.
+
 ## Contributing
 
 If you'd like to contribute to this project, please fork the repository and create a pull request with your changes.
