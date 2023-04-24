@@ -12,7 +12,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
@@ -54,14 +60,21 @@ public class MainActivity extends AppCompatActivity {
             Uri uri = data.getData();
             new DebugString("URI: " + uri.toString(), debugConsole);
             // Code to handle the selected ZIP archive
+            // Creazione istanza Gson
+            Gson gson = new Gson();
+
             try {
+                // Ottenimento del percorso assoluto della directory dei file dell'applicazione
+                String path = getFilesDir().getAbsolutePath();
+
+                // Apertura del file ZIP e lettura dei contenuti
                 InputStream inputStream = getContentResolver().openInputStream(uri);
                 ZipInputStream zipInputStream = new ZipInputStream(inputStream);
                 ZipEntry zipEntry;
                 while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                     String fileName = zipEntry.getName();
                     if (fileName.endsWith(".json")) {
-                        // Code to read the JSON file
+                        // Lettura del file JSON e modifica del contenuto
                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                         byte[] buffer = new byte[1024];
                         int length;
@@ -69,17 +82,51 @@ public class MainActivity extends AppCompatActivity {
                             outputStream.write(buffer, 0, length);
                         }
                         String jsonString = outputStream.toString("UTF-8");
-                        // Do something with the JSON string
                         new DebugString("JSONString: " + jsonString, debugConsole);
                         Log.d(TAG, jsonString);
+
+                        JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
+                        new DebugString("JSONObj: " + jsonObject.toString(), debugConsole);
+
+                        String imageUrl = jsonObject.get("image").getAsString();
+                        new DebugString("ImageURL: " + imageUrl, debugConsole);
+
+                        String newImageUrl = imageUrl.replace("CAMBIAMI", "nuovaStringa");
+                        new DebugString("NewImageURL: " + newImageUrl, debugConsole);
+
+                        jsonObject.addProperty("image", newImageUrl);
+                        new DebugString("NewJSONObj: " + jsonObject.toString(), debugConsole);
+
+                        String newJsonString = gson.newBuilder().setPrettyPrinting().create().toJson(jsonObject);
+                        new DebugString("NewJSONString: " + newJsonString, debugConsole);
+
+                        // Sovrascrittura del file JSON con il nuovo contenuto
+                        // FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+
+//                        FileOutputStream fileOutputStream = new FileOutputStream(new File(path, fileName));
+//                        new DebugString("FileOutputStream: " + fileOutputStream.toString(), debugConsole);
+//
+//                        fileOutputStream.write(newJsonString.getBytes());
+//                        new DebugString("FileOutputStream: " + fileOutputStream.toString(), debugConsole);
+//
+//                        fileOutputStream.close();
+//                        new DebugString("FileOutputStream: " + fileOutputStream.toString(), debugConsole);
                     }
-                    zipInputStream.closeEntry();
+//                    zipInputStream.closeEntry();
+//                    new DebugString("ZipInputStream: " + zipInputStream.toString(), debugConsole);
                 }
                 zipInputStream.close();
+                new DebugString("ZipInputStream: " + zipInputStream.toString(), debugConsole);
+
                 inputStream.close();
-            } catch (IOException e) {
+                new DebugString("InputStream: " + inputStream.toString(), debugConsole);
+
+            }
+            catch (IOException e)
+            {
                 e.printStackTrace();
             }
+
 
         }
     }
