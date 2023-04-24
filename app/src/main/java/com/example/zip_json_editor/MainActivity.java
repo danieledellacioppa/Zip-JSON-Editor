@@ -1,10 +1,14 @@
 package com.example.zip_json_editor;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -111,6 +115,29 @@ public class MainActivity extends AppCompatActivity {
 //
 //                        fileOutputStream.close();
 //                        new DebugString("FileOutputStream: " + fileOutputStream.toString(), debugConsole);
+
+                        if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
+                                != PackageManager.PERMISSION_GRANTED) {
+                            // Permission is not granted
+                            // Request the permission
+                            ActivityCompat.requestPermissions(this,
+                                    new String[]{WRITE_EXTERNAL_STORAGE},
+                                    1);
+                        }
+
+// Creazione della directory in cui salvare i file
+                        File directory = new File(getExternalFilesDir(null), "json_files");
+                        if (!directory.exists()) {
+                            directory.mkdir();
+                        }
+
+// Scrittura del file nella directory
+                        File outputFile = new File(directory, fileName);
+                        try (FileOutputStream output = new FileOutputStream(outputFile)) {
+                            output.write(newJsonString.getBytes());
+                        }
+
+
                     }
 //                    zipInputStream.closeEntry();
 //                    new DebugString("ZipInputStream: " + zipInputStream.toString(), debugConsole);
