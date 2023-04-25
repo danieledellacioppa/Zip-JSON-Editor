@@ -16,7 +16,7 @@ public class FileListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_file_list);
         File directory = new File(getFilesDir(),"./");
         File[] files = directory.listFiles();
-        FileAdapter adapter = new FileAdapter(files);
+        FileAdapter adapter = new FileAdapter(files, this,directory);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
