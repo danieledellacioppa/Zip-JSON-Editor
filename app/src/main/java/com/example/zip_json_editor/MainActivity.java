@@ -39,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button myButton = findViewById(R.id.my_button);
+        myButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FileListActivity.class);
+                startActivity(intent);
+            }
+        });
+
         worker = new MyHandlerThread();
 
         debugConsole = findViewById(R.id.dbgConsole);
