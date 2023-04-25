@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             Uri uri = data.getData();
@@ -70,6 +72,11 @@ public class MainActivity extends AppCompatActivity {
             try {
                 // Ottenimento del percorso assoluto della directory dei file dell'applicazione
                 String path = getFilesDir().getAbsolutePath();
+
+                // Apertura del file ZIP in scrittura
+                FileOutputStream fileOutputStream = new FileOutputStream(new File(path, "output.zip"));
+                ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+
 
                 // Apertura del file ZIP e lettura dei contenuti
                 InputStream inputStream = getContentResolver().openInputStream(uri);
@@ -117,14 +124,19 @@ public class MainActivity extends AppCompatActivity {
 //                        fileOutputStream.close();
 //                        new DebugString("FileOutputStream: " + fileOutputStream.toString(), debugConsole);
 
-                        File outputFile = new File(getFilesDir(), fileName.substring("metadata/".length()));
-                        FileOutputStream output = new FileOutputStream(outputFile);
-                        output.write(newJsonString.getBytes());
+//                        File outputFile = new File(getFilesDir(), fileName.substring("metadata/".length()));
+//                        FileOutputStream output = new FileOutputStream(outputFile);
+//                        output.write(newJsonString.getBytes());
 
+                        // Scrittura del file JSON modificato nell'archivio ZIP
+                        ZipEntry newZipEntry = new ZipEntry(fileName);
+                        zipOutputStream.putNextEntry(newZipEntry);
+                        zipOutputStream.write(newJsonString.getBytes());
+                        zipOutputStream.closeEntry();
 
                     }
-//                    zipInputStream.closeEntry();
-//                    new DebugString("ZipInputStream: " + zipInputStream.toString(), debugConsole);
+                    zipInputStream.closeEntry();
+                    new DebugString("ZipInputStream: " + zipInputStream.toString(), debugConsole);
 
                 }
                 zipInputStream.close();
