@@ -76,7 +76,7 @@ public class DebugString
                     textView.append(dbg.get(i));
             Log.d(TAG, dbg.toString());
             if(DEBUG)
-                textView.append("\n");
+                textView.append("\n\n");
             Log.d(TAG, "\n");
         });
 

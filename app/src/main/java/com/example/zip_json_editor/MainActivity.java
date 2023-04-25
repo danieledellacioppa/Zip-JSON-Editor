@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 ZipEntry zipEntry;
                 while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                     String fileName = zipEntry.getName();
+                    new DebugString("FileName: " + fileName, debugConsole);
                     if (fileName.endsWith(".json")) {
                         // Lettura del file JSON e modifica del contenuto
                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -116,31 +117,15 @@ public class MainActivity extends AppCompatActivity {
 //                        fileOutputStream.close();
 //                        new DebugString("FileOutputStream: " + fileOutputStream.toString(), debugConsole);
 
-                        if (ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
-                                != PackageManager.PERMISSION_GRANTED) {
-                            // Permission is not granted
-                            // Request the permission
-                            ActivityCompat.requestPermissions(this,
-                                    new String[]{WRITE_EXTERNAL_STORAGE},
-                                    1);
-                        }
-
-// Creazione della directory in cui salvare i file
-                        File directory = new File(getExternalFilesDir(null), "json_files");
-                        if (!directory.exists()) {
-                            directory.mkdir();
-                        }
-
-// Scrittura del file nella directory
-                        File outputFile = new File(directory, fileName);
-                        try (FileOutputStream output = new FileOutputStream(outputFile)) {
-                            output.write(newJsonString.getBytes());
-                        }
+                        File outputFile = new File(getFilesDir(), fileName.substring("metadata/".length()));
+                        FileOutputStream output = new FileOutputStream(outputFile);
+                        output.write(newJsonString.getBytes());
 
 
                     }
 //                    zipInputStream.closeEntry();
 //                    new DebugString("ZipInputStream: " + zipInputStream.toString(), debugConsole);
+
                 }
                 zipInputStream.close();
                 new DebugString("ZipInputStream: " + zipInputStream.toString(), debugConsole);
