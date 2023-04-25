@@ -32,12 +32,14 @@ import java.util.zip.ZipOutputStream;
 public class MainActivity extends AppCompatActivity {
 
     TextView debugConsole;
-
+    MyHandlerThread worker;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        worker = new MyHandlerThread();
 
         debugConsole = findViewById(R.id.dbgConsole);
         debugConsole.setText("Debug Console");
@@ -62,94 +64,71 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
-            Uri uri = data.getData();
-            new DebugString("URI: " + uri.toString(), debugConsole);
-            // Code to handle the selected ZIP archive
-            // Creazione istanza Gson
-            Gson gson = new Gson();
+        if (requestCode == 1 && resultCode == RESULT_OK && data != null)
+        {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    // Uri del file ZIP selezionato dall'utente
+                    Uri uri = data.getData();
+                    new DebugString("URI: " + uri.toString(), debugConsole);
 
-            try {
-                // Ottenimento del percorso assoluto della directory dei file dell'applicazione
-                String path = getFilesDir().getAbsolutePath();
+                    // Creazione istanza Gson
+                    Gson gson = new Gson();
 
-                // Apertura del file ZIP in scrittura
-                FileOutputStream fileOutputStream = new FileOutputStream(new File(path, "output.zip"));
-                ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+                    try {
+                        // Ottenimento del percorso assoluto della directory dei file dell'applicazione
+                        String path = getFilesDir().getAbsolutePath();
 
+                        // Apertura del file ZIP in scrittura
+                        FileOutputStream fileOutputStream = new FileOutputStream(new File(path, "output.zip"));
+                        ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
 
-                // Apertura del file ZIP e lettura dei contenuti
-                InputStream inputStream = getContentResolver().openInputStream(uri);
-                ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-                ZipEntry zipEntry;
-                while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                    String fileName = zipEntry.getName();
-                    new DebugString("FileName: " + fileName, debugConsole);
-                    if (fileName.endsWith(".json")) {
-                        // Lettura del file JSON e modifica del contenuto
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[1024];
-                        int length;
-                        while ((length = zipInputStream.read(buffer)) > 0) {
-                            outputStream.write(buffer, 0, length);
+                        // Apertura del file ZIP e lettura dei contenuti
+                        InputStream inputStream = getContentResolver().openInputStream(uri);
+                        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+                        ZipEntry zipEntry;
+                        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                            String fileName = zipEntry.getName();
+                            if (fileName.endsWith(".json")) {
+                                // Lettura del file JSON e modifica del contenuto
+                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                                byte[] buffer = new byte[1024];
+                                int length;
+                                while ((length = zipInputStream.read(buffer)) > 0) {
+                                    outputStream.write(buffer, 0, length);
+                                }
+                                String jsonString = outputStream.toString("UTF-8");
+                                Log.d(TAG, jsonString);
+
+                                JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
+                                String imageUrl = jsonObject.get("image").getAsString();
+                                String newImageUrl = imageUrl.replace("CAMBIAMI", "nuovaStringa");
+                                jsonObject.addProperty("image", newImageUrl);
+                                String newJsonString = gson.newBuilder().setPrettyPrinting().create().toJson(jsonObject);
+
+                                // Scrittura del file JSON modificato nell'archivio ZIP
+                                ZipEntry newZipEntry = new ZipEntry(fileName);
+                                zipOutputStream.putNextEntry(newZipEntry);
+                                zipOutputStream.write(newJsonString.getBytes());
+                                zipOutputStream.closeEntry();
+                            }
+                            zipInputStream.closeEntry();
                         }
-                        String jsonString = outputStream.toString("UTF-8");
-                        new DebugString("JSONString: " + jsonString, debugConsole);
-                        Log.d(TAG, jsonString);
+                        zipInputStream.close();
+                        inputStream.close();
 
-                        JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
-                        new DebugString("JSONObj: " + jsonObject.toString(), debugConsole);
-
-                        String imageUrl = jsonObject.get("image").getAsString();
-                        new DebugString("ImageURL: " + imageUrl, debugConsole);
-
-                        String newImageUrl = imageUrl.replace("CAMBIAMI", "nuovaStringa");
-                        new DebugString("NewImageURL: " + newImageUrl, debugConsole);
-
-                        jsonObject.addProperty("image", newImageUrl);
-                        new DebugString("NewJSONObj: " + jsonObject.toString(), debugConsole);
-
-                        String newJsonString = gson.newBuilder().setPrettyPrinting().create().toJson(jsonObject);
-                        new DebugString("NewJSONString: " + newJsonString, debugConsole);
-
-                        // Sovrascrittura del file JSON con il nuovo contenuto
-                        // FileOutputStream fileOutputStream = new FileOutputStream(fileName);
-
-//                        FileOutputStream fileOutputStream = new FileOutputStream(new File(path, fileName));
-//                        new DebugString("FileOutputStream: " + fileOutputStream.toString(), debugConsole);
-//
-//                        fileOutputStream.write(newJsonString.getBytes());
-//                        new DebugString("FileOutputStream: " + fileOutputStream.toString(), debugConsole);
-//
-//                        fileOutputStream.close();
-//                        new DebugString("FileOutputStream: " + fileOutputStream.toString(), debugConsole);
-
-//                        File outputFile = new File(getFilesDir(), fileName.substring("metadata/".length()));
-//                        FileOutputStream output = new FileOutputStream(outputFile);
-//                        output.write(newJsonString.getBytes());
-
-                        // Scrittura del file JSON modificato nell'archivio ZIP
-                        ZipEntry newZipEntry = new ZipEntry(fileName);
-                        zipOutputStream.putNextEntry(newZipEntry);
-                        zipOutputStream.write(newJsonString.getBytes());
-                        zipOutputStream.closeEntry();
-
+                        // Chiusura dell'archivio ZIP
+                        zipOutputStream.close();
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    zipInputStream.closeEntry();
-                    new DebugString("ZipInputStream: " + zipInputStream.toString(), debugConsole);
-
                 }
-                zipInputStream.close();
-                new DebugString("ZipInputStream: " + zipInputStream.toString(), debugConsole);
+            };
 
-                inputStream.close();
-                new DebugString("InputStream: " + inputStream.toString(), debugConsole);
-
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+// Esecuzione del runnable in un thread separato
+            worker.execute(runnable);
 
 
         }
