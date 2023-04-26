@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
@@ -64,10 +65,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // Code to open file picker and select ZIP archive
                 labeltext = textInputEditText.getText().toString();
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("application/zip");
-                startActivityForResult(Intent.createChooser(intent, "Select ZIP archive"), 1);
 
+                if(labeltext.isEmpty())
+                {
+                    Toast.makeText(MainActivity.this, "Please enter a label", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("application/zip");
+                    startActivityForResult(Intent.createChooser(intent, "Select ZIP archive"), 1);
+                }
             }
         });
 
