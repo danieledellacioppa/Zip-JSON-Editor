@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -34,12 +35,13 @@ public class MainActivity extends AppCompatActivity {
 
     TextView debugConsole;
     MyHandlerThread worker;
+    String labeltext;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        TextInputEditText textInputEditText = findViewById(R.id.newLinkLabel);
         Button myButton = findViewById(R.id.my_button);
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Code to open file picker and select ZIP archive
+                labeltext = textInputEditText.getText().toString();
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("application/zip");
                 startActivityForResult(Intent.createChooser(intent, "Select ZIP archive"), 1);
@@ -71,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         // Imposta lo sfondo come immagine presente nella cartella "drawable"
         ConstraintLayout mainLayout = findViewById(R.id.activity_main);
         mainLayout.setBackgroundResource(R.drawable.wall);
+
+
+
     }
 
     @Override
@@ -79,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null)
         {
-            ZipTask zipTask = new ZipTask(this, data, debugConsole);
+            ZipTask zipTask = new ZipTask(this, data, debugConsole,labeltext);
             worker.execute(zipTask);
 
         }

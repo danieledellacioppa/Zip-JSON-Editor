@@ -29,13 +29,15 @@ public class ZipTask implements Runnable{
     private Intent data;
     private TextView debugConsole;
     private Gson gson;
+    private String labeltext;
 
-    public ZipTask(Context context, Intent data, TextView debugConsole)
+    public ZipTask(Context context, Intent data, TextView debugConsole, String labeltext)
     {
         this.context = context;
         this.data = data;
         this.debugConsole = debugConsole;
         this.gson = new Gson();
+        this.labeltext = labeltext;
     }
 
     @Override
@@ -129,7 +131,7 @@ public class ZipTask implements Runnable{
 
     private String modifyJsonString(JsonObject jsonObject) {
         String imageUrl = jsonObject.get("image").getAsString();
-        String newImageUrl = imageUrl.replace("CAMBIAMI", "nuovaStringa");
+        String newImageUrl = imageUrl.replace("CAMBIAMI", labeltext);
         jsonObject.addProperty("image", newImageUrl);
         return gson.newBuilder().setPrettyPrinting().create().toJson(jsonObject);
     }

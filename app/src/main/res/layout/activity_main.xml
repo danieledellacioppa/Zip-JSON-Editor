@@ -19,7 +19,7 @@
         android:text="Hello World!"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="#FFE86F"
-        app:layout_constraintBottom_toTopOf="@+id/textInputEditText2"
+        app:layout_constraintBottom_toTopOf="@+id/newLinkLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -50,7 +50,7 @@
         app:layout_constraintTop_toTopOf="@+id/browse_button" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/textInputEditText2"
+        android:id="@+id/newLinkLabel"
         android:layout_width="376dp"
         android:layout_height="35dp"
         android:layout_marginStart="19dp"
