@@ -4,6 +4,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -67,6 +68,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Imposta lo sfondo come immagine presente nella cartella "drawable"
+        ConstraintLayout mainLayout = findViewById(R.id.activity_main);
+        mainLayout.setBackgroundResource(R.drawable.wall);
     }
 
     @Override
