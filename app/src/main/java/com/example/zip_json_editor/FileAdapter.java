@@ -62,13 +62,29 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                 File file = mFiles[localPosition];
                 if (file.exists()) {
                     file.delete();
-                    // Aggiorna la RecyclerView dopo la cancellazione del file
+                    // Rimuovi il file dalla lista di file
+                    mFiles = removeItemFromList(mFiles, localPosition);
+
+                    // Notifica alla RecyclerView di aggiornare la visualizzazione
                     notifyItemRemoved(localPosition);
                     notifyItemRangeChanged(localPosition, mFiles.length);
+
                 }
             }
         });
     }
+
+    private File[] removeItemFromList(File[] array, int index) {
+        File[] newArray = new File[array.length - 1];
+        int j = 0;
+        for (int i = 0; i < array.length; i++) {
+            if (i != index) {
+                newArray[j++] = array[i];
+            }
+        }
+        return newArray;
+    }
+
 
     @Override
     public int getItemCount() {

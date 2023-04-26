@@ -90,6 +90,7 @@ public class ZipTask implements Runnable{
         ZipInputStream zipInputStream = new ZipInputStream(inputStream);
         ZipEntry zipEntry;
 
+        new DebugString("Start reading zip file...", debugConsole);
         while ((zipEntry = zipInputStream.getNextEntry()) != null)
         {
             String fileName = zipEntry.getName();
@@ -103,6 +104,7 @@ public class ZipTask implements Runnable{
             }
             zipInputStream.closeEntry();
         }
+        new DebugString("End reading zip file!", debugConsole);
 
         zipInputStream.close();
         inputStream.close();
