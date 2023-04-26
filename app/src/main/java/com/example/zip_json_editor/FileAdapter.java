@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,10 +34,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position)
+    {
         holder.mFileName.setText(mFiles[position].getName());
         String fileName = mFiles[position].getName();
-        holder.mFileName.setOnClickListener(new View.OnClickListener() {
+        int localPosition= holder.getAdapterPosition();
+        holder.mFileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Creazione dell'Intent per condividere il file tramite WhatsApp
@@ -51,6 +54,20 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
                 context.startActivity(Intent.createChooser(shareIntent, "Condividi file"));
             }
         });
+
+
+        holder.mFileDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File file = mFiles[localPosition];
+                if (file.exists()) {
+                    file.delete();
+                    // Aggiorna la RecyclerView dopo la cancellazione del file
+                    notifyItemRemoved(localPosition);
+                    notifyItemRangeChanged(localPosition, mFiles.length);
+                }
+            }
+        });
     }
 
     @Override
@@ -60,10 +77,14 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public TextView mFileName;
+        public ImageView mFileImage;
+        public ImageView mFileDelete;
 
         public ViewHolder(View itemView) {
             super(itemView);
             mFileName = itemView.findViewById(R.id.fileName);
+            mFileImage = itemView.findViewById(R.id.fileIcon);
+            mFileDelete = itemView.findViewById(R.id.deleteBTN);
         }
 
     }
