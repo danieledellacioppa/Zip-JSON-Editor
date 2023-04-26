@@ -35,13 +35,14 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.mFileName.setText(mFiles[position].getName());
+        String fileName = mFiles[position].getName();
         holder.mFileName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Creazione dell'Intent per condividere il file tramite WhatsApp
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("application/zip");
-                File file = new File(context.getFilesDir(), "output.zip");
+                File file = new File(context.getFilesDir(), fileName);
                 Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
 //                Uri fileUri = Uri.fromFile(new File(path, "output.zip"));
                 shareIntent.putExtra(Intent.EXTRA_STREAM, fileUri);

@@ -75,70 +75,8 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null)
         {
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Uri del file ZIP selezionato dall'utente
-                    Uri uri = data.getData();
-                    new DebugString("URI: " + uri.toString(), debugConsole);
-
-                    // Creazione istanza Gson
-                    Gson gson = new Gson();
-
-                    try {
-                        // Ottenimento del percorso assoluto della directory dei file dell'applicazione
-                        String path = getFilesDir().getAbsolutePath();
-
-                        // Apertura del file ZIP in scrittura
-                        FileOutputStream fileOutputStream = new FileOutputStream(new File(path, "output.zip"));
-                        ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
-
-                        // Apertura del file ZIP e lettura dei contenuti
-                        InputStream inputStream = getContentResolver().openInputStream(uri);
-                        ZipInputStream zipInputStream = new ZipInputStream(inputStream);
-                        ZipEntry zipEntry;
-                        while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                            String fileName = zipEntry.getName();
-                            if (fileName.endsWith(".json")) {
-                                // Lettura del file JSON e modifica del contenuto
-                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                                byte[] buffer = new byte[1024];
-                                int length;
-                                while ((length = zipInputStream.read(buffer)) > 0) {
-                                    outputStream.write(buffer, 0, length);
-                                }
-                                String jsonString = outputStream.toString("UTF-8");
-                                Log.d(TAG, jsonString);
-
-                                JsonObject jsonObject = gson.fromJson(jsonString, JsonObject.class);
-                                String imageUrl = jsonObject.get("image").getAsString();
-                                String newImageUrl = imageUrl.replace("CAMBIAMI", "nuovaStringa");
-                                jsonObject.addProperty("image", newImageUrl);
-                                String newJsonString = gson.newBuilder().setPrettyPrinting().create().toJson(jsonObject);
-
-                                // Scrittura del file JSON modificato nell'archivio ZIP
-                                ZipEntry newZipEntry = new ZipEntry(fileName);
-                                zipOutputStream.putNextEntry(newZipEntry);
-                                zipOutputStream.write(newJsonString.getBytes());
-                                zipOutputStream.closeEntry();
-                            }
-                            zipInputStream.closeEntry();
-                        }
-                        zipInputStream.close();
-                        inputStream.close();
-
-                        // Chiusura dell'archivio ZIP
-                        zipOutputStream.close();
-                        fileOutputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-
-// Esecuzione del runnable in un thread separato
-            worker.execute(runnable);
-
+            ZipTask zipTask = new ZipTask(this, data, debugConsole);
+            worker.execute(zipTask);
 
         }
     }
