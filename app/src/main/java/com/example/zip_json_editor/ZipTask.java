@@ -42,8 +42,8 @@ public class ZipTask implements Runnable{
     public void run()
     {
         Uri uri = data.getData();
-//        String outputfile = getOutputfileName(uri);
-        String outputfile = "test.zip";
+        String outputfile = getOutputfileName(uri);
+//        String outputfile = "output.zip";
         new DebugString("URI: " + uri.toString(), debugConsole);
         new DebugString("Last Path Segment: " + outputfile, debugConsole);
 
