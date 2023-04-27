@@ -54,7 +54,12 @@ public class MainActivity extends AppCompatActivity {
 
         worker = new MyHandlerThread();
 
-        debugConsole = findViewById(R.id.dbgConsole);
+
+        // Trova il Fragment utilizzando un metodo del FragmentManager
+        ConsoleFragment myFragment = (ConsoleFragment) getSupportFragmentManager().findFragmentById(R.id.activity_main);
+
+
+        debugConsole = myFragment.getView().findViewById(R.id.dbgConsole);
         debugConsole.setText("Debug Console");
         debugConsole.setMovementMethod(new android.text.method.ScrollingMovementMethod());
 
@@ -82,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         // Imposta lo sfondo come immagine presente nella cartella "drawable"
         ConstraintLayout mainLayout = findViewById(R.id.activity_main);
         mainLayout.setBackgroundResource(R.drawable.wall);
+
 
 
 
