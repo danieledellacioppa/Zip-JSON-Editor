@@ -37,13 +37,28 @@ public class MainActivity extends AppCompatActivity {
     TextView debugConsole;
     MyHandlerThread worker;
     String labeltext;
+    TextInputEditText textInputEditText;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextInputEditText textInputEditText = findViewById(R.id.newLinkLabel);
-        Button myButton = findViewById(R.id.my_button);
+
+
+        worker = new MyHandlerThread();
+
+
+        ConsoleFragment myFragment = new ConsoleFragment();
+        // Trova il Fragment utilizzando un metodo del FragmentManager
+        myFragment = (ConsoleFragment) getSupportFragmentManager().findFragmentById(R.id.my_fragment);
+
+        // Trova la TextView all'interno del Fragment utilizzando il metodo findViewById()
+        debugConsole = myFragment.getView().findViewById(R.id.dbgConsole);
+        debugConsole.setMovementMethod(new android.text.method.ScrollingMovementMethod());
+
+        textInputEditText = myFragment.getView().findViewById(R.id.newLinkLabel);
+
+        Button myButton = myFragment.getView().findViewById(R.id.my_button);
         myButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,14 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        worker = new MyHandlerThread();
-
-        debugConsole = findViewById(R.id.dbgConsole);
-        debugConsole.setText("Debug Console");
-        debugConsole.setMovementMethod(new android.text.method.ScrollingMovementMethod());
-
-
-        Button browseButton = findViewById(R.id.browse_button);
+        Button browseButton = myFragment.getView().findViewById(R.id.browse_button);
         browseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         // Imposta lo sfondo come immagine presente nella cartella "drawable"
         ConstraintLayout mainLayout = findViewById(R.id.activity_main);
         mainLayout.setBackgroundResource(R.drawable.wall);
+
 
 
 
