@@ -23,7 +23,7 @@ public class ConsoleFragment extends Fragment {
         // Trova la TextView all'interno del layout XML del Fragment
         TextView textView = view.findViewById(R.id.dbgConsole);
         // Eventualmente, impostare il testo della TextView o altre proprietà della TextView
-        textView.setText("Questo è il testo da dentro ConsoleFragment");
+        textView.setText("Output Console\n");
 
         TextInputEditText textInputEditText = view.findViewById(R.id.newLinkLabel);
 //        textInputEditText.setText("Questo è il testo da dentro ConsoleFragment");
