@@ -26,10 +26,10 @@ git clone git@github.com:danieledellacioppa/Zip-JSON-Editor.git
 Once the app is running, follow these steps to modify JSON files:
 
 1. Click the **Search JSON** button to choose the ZIP file that contains the JSON files you want to modify.
-  * you need to fill the field first or it won't do anything except telling you off
+   * you need to fill the field first or it won't do anything except telling you off
 2. Wait for the app to finish modifying the JSON files. (the pink console will tell ya)
 3. Click the **Show Result** button to look at the ZIP file/s obtained this way.
-  * the app only allows to share with whatsapp
+   * the app only allows to share with whatsapp
 
 # Next Development Steps
 1. share with other apps
