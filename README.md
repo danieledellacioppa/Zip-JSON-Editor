@@ -6,7 +6,7 @@ ZipJsonModifier is an Android app that allows you to modify JSON files contained
 To build and run this app, you will need:
 
 * Android Studio 4.1 or later
-* An Android device or emulator running Android 5.0 (API level 21) or later
+* An Android device or emulator running Android 10.0 (API level 26) or later
 
 ## Getting Started
 
@@ -15,7 +15,7 @@ To get started with ZipJsonModifier, follow these steps:
 1. Clone the repository to your local machine:
 
 ```bash
-git clone https://github.com/<your-username>/ZipJsonModifier.git
+git clone git@github.com:danieledellacioppa/Zip-JSON-Editor.git
 ```
 2. Open the project in Android Studio.
 3. Use the Android Studio emulator or connect your Android device to your computer.
@@ -25,19 +25,19 @@ git clone https://github.com/<your-username>/ZipJsonModifier.git
 
 Once the app is running, follow these steps to modify JSON files:
 
-1. Click the "Select Input Zip" button to choose the ZIP file that contains the JSON files you want to modify.
-2. Click the "Select Output Zip" button to choose the ZIP file where the modified JSON files will be saved.
-3. Click the "Modify" button to begin the modification process.
-4. Wait for the app to finish modifying the JSON files.
-5. Once the modification process is complete, you can find the modified ZIP file in the location you specified in step 2.
+1. Click the **Search JSON** button to choose the ZIP file that contains the JSON files you want to modify.
+  * you need to fill the field first or it won't do anything except telling you off
+2. Wait for the app to finish modifying the JSON files. (the pink console will tell ya)
+3. Click the **Show Result** button to look at the ZIP file/s obtained this way.
+  * the app only allows to share with whatsapp
 
-# Project Development Steps
-1. Create a new Android project in Android Studio.
-2. Create a user interface with a "Browse" button that allows the user to select the ZIP archive.
-3. Use the java.util.zip library to decompress the selected ZIP archive and get the JSON files inside it.
-4. Use the JSON file modification algorithm that you have already created to modify the files.
-5. Use the java.util.zip library to create a new ZIP archive containing the modified JSON files.
-6. Give the user the option to save the new ZIP archive.
+# Next Development Steps
+1. share with other apps
+2. unit test
+3. change folder icons from germano to something better
+4. add a label to say what to change instead of just CAMBIAMI
+5. sign the app
+6. Give the app an icon
 
 ## Contributing
 
