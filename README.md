@@ -37,7 +37,6 @@ Once the app is running, follow these steps to modify JSON files:
 3. change folder icons from germano to something better
 4. add a label to say what to change instead of just CAMBIAMI
 5. sign the app
-6. Give the app an icon
 
 ## Contributing
 
